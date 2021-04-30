@@ -29,6 +29,8 @@ public class RoomController {
     public String addOne(@RequestBody RoomDTO roomDTO) {
         Optional<Hotel> optionalHotel = hotelRepository.findById(roomDTO.getHotel());
         if (!optionalHotel.isPresent()) return "Hotel is not found!";
+        boolean existRoom = roomRepository.existsByNumberAndHotel_Id(roomDTO.getNumber(), roomDTO.getHotel());
+        if (existRoom) return "Room is already exist";
         Room roomNew = new Room();
         roomNew.setNumber(roomDTO.getNumber());
         roomNew.setFloor(roomDTO.getFloor());
@@ -44,11 +46,16 @@ public class RoomController {
         if (!optionalHotel.isPresent()) return "Hotel is not found!";
         Optional<Room> optionalRoom = roomRepository.findById(id);
         if (!optionalRoom.isPresent()) return "Room is not found";
+        boolean existRoom = roomRepository.existsByNumberAndHotel_Id(roomDTO.getNumber(), roomDTO.getHotel());
         Room roomNew = optionalRoom.get();
+        if (existRoom && !roomDTO.getNumber().equals(roomNew.getNumber())) {
+            return "Room is already exist";
+        }
         roomNew.setNumber(roomDTO.getNumber());
         roomNew.setFloor(roomDTO.getFloor());
         roomNew.setSize(roomDTO.getSize());
         roomNew.setHotel(optionalHotel.get());
+        roomRepository.save(roomNew);
         return "Room edited successfully";
     }
 
@@ -61,7 +68,7 @@ public class RoomController {
     }
 
     @GetMapping
-    public List<Room> getAll(){
+    public List<Room> getAll() {
         return roomRepository.findAll();
     }
 

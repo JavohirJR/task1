@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoomRepository extends JpaRepository<Room, Integer> {
     Page<Room> findAllByHotel_Id(Integer hotel_id, Pageable pageable);
+
+    boolean existsByNumberAndHotel_Id(String number, Integer hotel_id);
 }

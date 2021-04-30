@@ -10,6 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"number","hotel_id"}))
 
 public class Room {
     @Id
